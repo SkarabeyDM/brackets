@@ -6,45 +6,35 @@ const config5 = [['(', ')'], ['|', '|']];
 const config6 = [['1', '2'], ['3', '4'], ['5', '6'], ['7', '7'], ['8', '8']];
 const config7 = [['(', ')'], ['[', ']'], ['{', '}'], ['|', '|']];
 
-function check(str, bracketsConfig) {
-  // Write config
-  const bracketsTypes = new Set(["open", "close", "both"])
-  let brackets = new Map()
-  bracketsConfig.forEach((element, i) => {
-    i++
-    if ((element[1] === element[0])) {
-      brackets.set(element[0], { num: i, type: "both" })
-    } else {
-      brackets.set(element[0], { num: i, type: "open" })
-      brackets.set(element[1], { num: i, type: "close" })
-    }
-  });
-
-  // Check nesting
+/**
+ * Is bracket nesting correct.
+ * @param {string} str 
+ * @param {Array<Array<string>>} bracketsConfig 
+ * @returns {boolean} 
+ */
+function check(str, bracketsConfig)
+{
   const stack = []
 
-  for (let i = 0; i < str.length; i++) {
-    const brkt = brackets.get(str[i]);
-    const peek = stack[stack.length - 1]
-    switch (brkt.type) {
-      case "open": stack.push(brkt.num); break;
-      case "close":
-        if (peek === brkt.num) {
-          stack.pop()
-        }else return false
-        break;
-      case "both":
-        if (peek === brkt.num)
-          stack.pop()
-        else
-          stack.push(brkt.num)
-    }
-  }
+  // Read config
+  const [opens, closes] = bracketsConfig.reduce(([openList, closeList], [open, close]) => ([{ ...openList, [open]: close }, { ...closeList, [close]: open }]), [{}, {}])
 
-  return Boolean(!stack.length)
+  // Check nesting
+  const isOpen = (bracket) => bracket in opens
+  const isClose = (bracket) => bracket in closes
+  const isRequired = (bracket) => opens[stack[stack.length - 1]] === bracket        // Is current bracket closes previous
+
+  for (const bracket of str)
+    if (isOpen(bracket))
+      if (isClose(bracket)) isRequired(bracket) ? stack.pop() : stack.push(bracket) // If bracket is from "twins" pair. Example: ["|", "|"]
+      else stack.push(bracket)                                                      // If bracket is just open 
+    else if (isClose(bracket) && isRequired(bracket)) stack.pop()                   // If bracket is closing and correct
+    else return false
+
+  return !stack.length;
 }
 
-//console.log(check("([{}])",config3))
-console.log(check('[]()(', config2))
+/* console.log(check("([{}])",config3)) */
+/* console.log(check('|()|', config5)) */
 
 module.exports = check
