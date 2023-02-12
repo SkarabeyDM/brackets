@@ -1,13 +1,13 @@
 /**
  * Is bracket nesting correct.
  * @param {string} str 
- * @param {Array<Array<string>>} bracketsConfig 
+ * @param {Array<Array<string>>} config 
  * @returns {boolean} 
  */
-function check(str, bracketsConfig)
+function check(str, config)
 {
   const stack = []
-  const config = Object.fromEntries(bracketsConfig)
+  config = Object.fromEntries(config)
 
   for (const bracket of str)
     if (bracket === config[stack[stack.length - 1]]) stack.pop()
