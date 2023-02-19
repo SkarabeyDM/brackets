@@ -1,7 +1,7 @@
 /**
  * Is bracket nesting correct.
  * @param {string} str 
- * @param {Array<Array<string>>} config 
+ * @param {[[string]]} config 
  * @returns {boolean} 
  */
 function check(str, config)
