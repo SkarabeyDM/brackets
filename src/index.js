@@ -1,11 +1,13 @@
 /**
  * Is bracket nesting correct.
  * @param {string} str 
- * @param {[[string]]} config 
+ * @param {[string[]]} config 
  * @returns {boolean} 
  */
 function check(str, config)
 {
+  if(str.length % 2) return false
+
   const stack = []
   config = Object.fromEntries(config)
 
