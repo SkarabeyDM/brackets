@@ -6,13 +6,14 @@
  */
 function check(str, config)
 {
-  if(str.length % 2) return false
+  if (str.length % 2) return false
 
   const stack = []
+  stack.peek = function () { return this[this.length - 1] }
   config = Object.fromEntries(config)
 
   for (const bracket of str)
-    if (bracket === config[stack[stack.length - 1]]) stack.pop()
+    if (bracket === config[stack.peek()]) stack.pop()
     else if (bracket in config) stack.push(bracket)
     else return false
 
